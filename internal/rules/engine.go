@@ -18,31 +18,25 @@ type Engine struct {
 }
 
 type Rule struct {
-	Title       string            `yaml:"title"`
-	ID          string            `yaml:"id"`
-	Status      string            `yaml:"status"`
-	Description string            `yaml:"description"`
-	Author      string            `yaml:"author"`
-	Date        string            `yaml:"date"`
-	Modified    string            `yaml:"modified"`
-	Tags        []string          `yaml:"tags"`
-	Level       string            `yaml:"level"`
-	Logsource   LogSource         `yaml:"logsource"`
-	Detection   Detection         `yaml:"detection"`
-	Falsepositives []string       `yaml:"falsepositives"`
-	Fields      []string          `yaml:"fields"`
+	Title       string                 `yaml:"title"`
+	ID          string                 `yaml:"id"`
+	Status      string                 `yaml:"status"`
+	Description string                 `yaml:"description"`
+	Author      string                 `yaml:"author"`
+	Date        string                 `yaml:"date"`
+	Modified    string                 `yaml:"modified"`
+	Tags        []string               `yaml:"tags"`
+	Level       string                 `yaml:"level"`
+	Logsource   LogSource              `yaml:"logsource"`
+	Detection   map[string]interface{} `yaml:"detection"`
+	Falsepositives []string            `yaml:"falsepositives"`
+	Fields      []string               `yaml:"fields"`
 }
 
 type LogSource struct {
 	Category string `yaml:"category"`
 	Product  string `yaml:"product"`
 	Service  string `yaml:"service"`
-}
-
-type Detection struct {
-	Selection map[string]interface{} `yaml:"selection"`
-	Condition string                 `yaml:"condition"`
-	Timeframe string                 `yaml:"timeframe"`
 }
 
 func NewEngine(rulesDir string) (*Engine, error) {
@@ -204,16 +198,27 @@ func (e *Engine) matchesLogSource(entry parser.LogEntry, logSource LogSource) bo
 	return true
 }
 
-func (e *Engine) evaluateDetection(entry parser.LogEntry, detection Detection) bool {
+func (e *Engine) evaluateDetection(entry parser.LogEntry, detection map[string]interface{}) bool {
 	// Evaluate selection criteria
 	matches := make(map[string]bool)
 	
-	for field, criteria := range detection.Selection {
+	// Get selection criteria
+	selection, ok := detection["selection"].(map[string]interface{})
+	if !ok {
+		return false
+	}
+	
+	for field, criteria := range selection {
 		matches[field] = e.evaluateField(entry, field, criteria)
 	}
 
 	// Evaluate condition
-	return e.evaluateCondition(matches, detection.Condition)
+	condition, ok := detection["condition"].(string)
+	if !ok {
+		return false
+	}
+	
+	return e.evaluateCondition(matches, condition)
 }
 
 func (e *Engine) evaluateField(entry parser.LogEntry, field string, criteria interface{}) bool {

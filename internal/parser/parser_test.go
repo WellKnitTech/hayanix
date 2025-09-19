@@ -81,8 +81,8 @@ Jan  1 10:31:22 server1 sudo: user : TTY=pts/0 ; PWD=/home/user ; USER=root ; CO
 	if firstEntry.Hostname != "server1" {
 		t.Errorf("Expected hostname 'server1', got '%s'", firstEntry.Hostname)
 	}
-	if firstEntry.Program != "sshd[1234]" {
-		t.Errorf("Expected program 'sshd[1234]', got '%s'", firstEntry.Program)
+	if firstEntry.Program != "sshd" {
+		t.Errorf("Expected program 'sshd', got '%s'", firstEntry.Program)
 	}
 	if firstEntry.PID != "1234" {
 		t.Errorf("Expected PID '1234', got '%s'", firstEntry.PID)

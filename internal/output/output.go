@@ -16,6 +16,10 @@ type Outputter struct {
 }
 
 func NewOutputter(format string) *Outputter {
+	// Default to table format for invalid formats
+	if format != "table" && format != "csv" && format != "json" {
+		format = "table"
+	}
 	return &Outputter{format: format}
 }
 

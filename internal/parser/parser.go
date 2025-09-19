@@ -63,7 +63,7 @@ func (p *SyslogParser) Parse() ([]LogEntry, error) {
 	scanner := bufio.NewScanner(file)
 	
 	// Syslog format: Jan 2 15:04:05 hostname program[pid]: message
-	syslogRegex := regexp.MustCompile(`^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})\s+(\S+)\s+(\S+)(?:\[(\d+)\])?:\s*(.*)$`)
+	syslogRegex := regexp.MustCompile(`^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})\s+(\S+)\s+(\S+?)(?:\[(\d+)\])?:\s*(.*)$`)
 
 	for scanner.Scan() {
 		line := scanner.Text()
