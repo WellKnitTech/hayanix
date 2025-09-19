@@ -14,28 +14,28 @@ import (
 
 type Args struct {
 	Version kong.VersionFlag `help:"Show version information."`
-	
+
 	// Analysis commands
 	Analyze AnalyzeCmd `cmd:"" help:"Analyze logs with sigma rules."`
-	
+
 	// Collection analysis
 	Collection CollectionCmd `cmd:"" help:"Analyze a collection of log files in a directory."`
-	
+
 	// Rule management commands
 	Rules RulesCmd `cmd:"" help:"Manage sigma rules from external sources."`
-	
+
 	// Setup wizard
 	Wizard WizardCmd `cmd:"" help:"Interactive setup wizard for configuring Hayanix."`
-	
+
 	Verbose bool `help:"Enable verbose output." short:"v"`
 }
 
 type AnalyzeCmd struct {
-	Target string `help:"Target log type (syslog, journald, auditd)." default:"syslog"`
-	Rules  string `help:"Path to sigma rules directory." default:"./rules"`
-	File   string `help:"Specific log file to analyze (optional)."`
-	Output string `help:"Output format (table, csv, json)." default:"table" enum:"table,csv,json"`
-	UseConfig bool `help:"Use saved configuration from wizard."`
+	Target    string `help:"Target log type (syslog, journald, auditd)." default:"syslog"`
+	Rules     string `help:"Path to sigma rules directory." default:"./rules"`
+	File      string `help:"Specific log file to analyze (optional)."`
+	Output    string `help:"Output format (table, csv, json)." default:"table" enum:"table,csv,json"`
+	UseConfig bool   `help:"Use saved configuration from wizard."`
 }
 
 type CollectionCmd struct {
@@ -49,13 +49,13 @@ type CollectionCmd struct {
 }
 
 type RulesCmd struct {
-	List    RulesListCmd    `cmd:"" help:"List available rule sources."`
+	List     RulesListCmd     `cmd:"" help:"List available rule sources."`
 	Download RulesDownloadCmd `cmd:"" help:"Download rules from external sources."`
-	Update  RulesUpdateCmd  `cmd:"" help:"Update existing rule sources."`
-	Add     RulesAddCmd     `cmd:"" help:"Add a new rule source."`
-	Remove  RulesRemoveCmd  `cmd:"" help:"Remove a rule source."`
-	Enable  RulesEnableCmd  `cmd:"" help:"Enable a rule source."`
-	Disable RulesDisableCmd `cmd:"" help:"Disable a rule source."`
+	Update   RulesUpdateCmd   `cmd:"" help:"Update existing rule sources."`
+	Add      RulesAddCmd      `cmd:"" help:"Add a new rule source."`
+	Remove   RulesRemoveCmd   `cmd:"" help:"Remove a rule source."`
+	Enable   RulesEnableCmd   `cmd:"" help:"Enable a rule source."`
+	Disable  RulesDisableCmd  `cmd:"" help:"Disable a rule source."`
 }
 
 type RulesListCmd struct {
@@ -63,15 +63,15 @@ type RulesListCmd struct {
 }
 
 type RulesDownloadCmd struct {
-	Source  string `help:"Source name to download from."`
+	Source   string `help:"Source name to download from."`
 	RulesDir string `help:"Path to rules directory." default:"./rules"`
-	All     bool   `help:"Download from all enabled sources."`
+	All      bool   `help:"Download from all enabled sources."`
 }
 
 type RulesUpdateCmd struct {
-	Source  string `help:"Source name to update."`
+	Source   string `help:"Source name to update."`
 	RulesDir string `help:"Path to rules directory." default:"./rules"`
-	All     bool   `help:"Update all enabled sources."`
+	All      bool   `help:"Update all enabled sources."`
 }
 
 type RulesAddCmd struct {
@@ -83,24 +83,23 @@ type RulesAddCmd struct {
 }
 
 type RulesRemoveCmd struct {
-	Source  string `help:"Source name to remove."`
+	Source   string `help:"Source name to remove."`
 	RulesDir string `help:"Path to rules directory." default:"./rules"`
 }
 
 type RulesEnableCmd struct {
-	Source  string `help:"Source name to enable."`
+	Source   string `help:"Source name to enable."`
 	RulesDir string `help:"Path to rules directory." default:"./rules"`
 }
 
 type RulesDisableCmd struct {
-	Source  string `help:"Source name to disable."`
+	Source   string `help:"Source name to disable."`
 	RulesDir string `help:"Path to rules directory." default:"./rules"`
 }
 
 type WizardCmd struct {
 	// No additional parameters needed for wizard
 }
-
 
 func (ac *AnalyzeCmd) Run() error {
 	var target, rulesDir, file, output string
@@ -111,7 +110,7 @@ func (ac *AnalyzeCmd) Run() error {
 		if err != nil {
 			return fmt.Errorf("failed to load saved configuration: %w", err)
 		}
-		
+
 		if cfg.LogFile == "" {
 			return fmt.Errorf("no saved configuration found. Run 'hayanix wizard' first to create one")
 		}
@@ -120,7 +119,7 @@ func (ac *AnalyzeCmd) Run() error {
 		rulesDir = cfg.RulesDir
 		file = cfg.LogFile
 		output = cfg.OutputFormat
-		
+
 		fmt.Printf("Using saved configuration:\n")
 		fmt.Printf("  Log Type: %s\n", target)
 		fmt.Printf("  Log File: %s\n", file)
@@ -136,11 +135,11 @@ func (ac *AnalyzeCmd) Run() error {
 
 	// Validate target
 	validTargets := map[string]bool{
-		"syslog":  true,
+		"syslog":   true,
 		"journald": true,
-		"auditd":  true,
+		"auditd":   true,
 	}
-	
+
 	if !validTargets[target] {
 		return fmt.Errorf("invalid target: %s. Valid targets are: syslog, journald, auditd", target)
 	}
@@ -161,7 +160,7 @@ func (ac *AnalyzeCmd) Run() error {
 		"csv":   true,
 		"json":  true,
 	}
-	
+
 	if !validOutputs[output] {
 		return fmt.Errorf("invalid output format: %s. Valid formats are: table, csv, json", output)
 	}
@@ -173,7 +172,7 @@ func (ac *AnalyzeCmd) Run() error {
 
 func (rc *RulesListCmd) Run() error {
 	rm := rules.NewRuleManager(rc.RulesDir)
-	
+
 	if err := rm.Initialize(); err != nil {
 		return fmt.Errorf("failed to initialize rule manager: %w", err)
 	}
@@ -200,7 +199,7 @@ func (rc *RulesListCmd) Run() error {
 
 func (rc *RulesDownloadCmd) Run() error {
 	rm := rules.NewRuleManager(rc.RulesDir)
-	
+
 	if err := rm.Initialize(); err != nil {
 		return fmt.Errorf("failed to initialize rule manager: %w", err)
 	}
@@ -246,7 +245,7 @@ func (rc *RulesUpdateCmd) Run() error {
 
 func (rc *RulesAddCmd) Run() error {
 	rm := rules.NewRuleManager(rc.RulesDir)
-	
+
 	if err := rm.Initialize(); err != nil {
 		return fmt.Errorf("failed to initialize rule manager: %w", err)
 	}
@@ -269,7 +268,7 @@ func (rc *RulesAddCmd) Run() error {
 
 func (rc *RulesRemoveCmd) Run() error {
 	rm := rules.NewRuleManager(rc.RulesDir)
-	
+
 	if err := rm.RemoveSource(rc.Source); err != nil {
 		return fmt.Errorf("failed to remove source: %w", err)
 	}
@@ -280,7 +279,7 @@ func (rc *RulesRemoveCmd) Run() error {
 
 func (rc *RulesEnableCmd) Run() error {
 	rm := rules.NewRuleManager(rc.RulesDir)
-	
+
 	if err := rm.EnableSource(rc.Source); err != nil {
 		return fmt.Errorf("failed to enable source: %w", err)
 	}
@@ -291,7 +290,7 @@ func (rc *RulesEnableCmd) Run() error {
 
 func (rc *RulesDisableCmd) Run() error {
 	rm := rules.NewRuleManager(rc.RulesDir)
-	
+
 	if err := rm.DisableSource(rc.Source); err != nil {
 		return fmt.Errorf("failed to disable source: %w", err)
 	}
@@ -302,7 +301,7 @@ func (rc *RulesDisableCmd) Run() error {
 
 func (wc *WizardCmd) Run() error {
 	w := wizard.NewWizard()
-	
+
 	config, err := w.Run()
 	if err != nil {
 		return err
@@ -337,7 +336,7 @@ func (cc *CollectionCmd) Run() error {
 		"csv":   true,
 		"json":  true,
 	}
-	
+
 	if !validOutputs[cc.Format] {
 		return fmt.Errorf("invalid output format: %s. Valid formats are: table, csv, json", cc.Format)
 	}
@@ -349,7 +348,7 @@ func (cc *CollectionCmd) Run() error {
 			"journald": true,
 			"auditd":   true,
 		}
-		
+
 		if !validTypes[cc.Type] {
 			return fmt.Errorf("invalid log type: %s. Valid types are: syslog, journald, auditd", cc.Type)
 		}
@@ -379,7 +378,7 @@ func (cc *CollectionCmd) Run() error {
 	fmt.Printf("Total Files: %d\n", logCollection.Summary.TotalFiles)
 	fmt.Printf("Total Size: %.2f MB\n", float64(logCollection.Summary.TotalSize)/(1024*1024))
 	fmt.Println()
-	
+
 	fmt.Println("Files by Type:")
 	for logType, count := range logCollection.Summary.FilesByType {
 		size := logCollection.Summary.SizeByType[logType]

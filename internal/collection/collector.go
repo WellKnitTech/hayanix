@@ -27,10 +27,10 @@ type Collection struct {
 }
 
 type CollectionSummary struct {
-	TotalFiles    int
-	TotalSize     int64
-	FilesByType   map[string]int
-	SizeByType    map[string]int64
+	TotalFiles      int
+	TotalSize       int64
+	FilesByType     map[string]int
+	SizeByType      map[string]int64
 	CompatibleTypes []string
 }
 
@@ -45,8 +45,8 @@ func (c *Collector) DiscoverLogFiles() (*Collection, error) {
 		BasePath: c.basePath,
 		LogFiles: make([]LogFile, 0),
 		Summary: CollectionSummary{
-			FilesByType: make(map[string]int),
-			SizeByType:  make(map[string]int64),
+			FilesByType:     make(map[string]int),
+			SizeByType:      make(map[string]int64),
 			CompatibleTypes: []string{"syslog", "journald", "auditd"},
 		},
 	}
@@ -76,7 +76,7 @@ func (c *Collector) DiscoverLogFiles() (*Collection, error) {
 				Size:     info.Size(),
 				Modified: info.ModTime().Format("2006-01-02 15:04:05"),
 			}
-			
+
 			collection.LogFiles = append(collection.LogFiles, logFile)
 			collection.Summary.FilesByType[logType]++
 			collection.Summary.SizeByType[logType] += info.Size()
@@ -180,8 +180,8 @@ func (c *Collector) FilterByType(collection *Collection, logType string) *Collec
 		BasePath: collection.BasePath,
 		LogFiles: make([]LogFile, 0),
 		Summary: CollectionSummary{
-			FilesByType: make(map[string]int),
-			SizeByType:  make(map[string]int64),
+			FilesByType:     make(map[string]int),
+			SizeByType:      make(map[string]int64),
 			CompatibleTypes: collection.Summary.CompatibleTypes,
 		},
 	}
@@ -205,14 +205,14 @@ func (c *Collector) FilterByType(collection *Collection, logType string) *Collec
 
 func (c *Collector) GetCompatibleFiles(collection *Collection) []LogFile {
 	compatible := make([]LogFile, 0)
-	
+
 	for _, logFile := range collection.LogFiles {
 		// Check if we have a parser for this log type
 		if _, err := parser.NewParser(logFile.Type, logFile.Path); err == nil {
 			compatible = append(compatible, logFile)
 		}
 	}
-	
+
 	return compatible
 }
 

@@ -16,13 +16,13 @@ type Wizard struct {
 }
 
 type WizardConfig struct {
-	LogFile      string
-	LogType      string
-	RulesDir     string
-	OutputFormat string
+	LogFile       string
+	LogType       string
+	RulesDir      string
+	OutputFormat  string
 	DownloadRules bool
-	RuleSources  []string
-	SaveConfig   bool
+	RuleSources   []string
+	SaveConfig    bool
 }
 
 func NewWizard() *Wizard {
@@ -46,11 +46,11 @@ func (w *Wizard) Run() (*WizardConfig, error) {
 		fmt.Printf("   Rules Dir: %s\n", existingConfig.RulesDir)
 		fmt.Printf("   Output: %s\n", existingConfig.OutputFormat)
 		fmt.Println()
-		
+
 		fmt.Print("Do you want to use existing configuration? (Y/n): ")
 		input, _ := w.reader.ReadString('\n')
 		input = strings.TrimSpace(strings.ToLower(input))
-		
+
 		if input == "" || input == "y" || input == "yes" {
 			return &WizardConfig{
 				LogFile:      existingConfig.LogFile,
@@ -418,7 +418,7 @@ func (w *Wizard) ExecuteConfiguration(wizardConfig *WizardConfig) error {
 			RuleSources:  wizardConfig.RuleSources,
 			LastUpdated:  time.Now().Format("2006-01-02 15:04:05"),
 		}
-		
+
 		if err := config.SaveConfig(cfg); err != nil {
 			fmt.Printf("⚠️  Warning: failed to save configuration: %v\n", err)
 		} else {
@@ -431,7 +431,7 @@ func (w *Wizard) ExecuteConfiguration(wizardConfig *WizardConfig) error {
 	if wizardConfig.DownloadRules {
 		fmt.Println("📥 Setting up rule sources...")
 		rm := rules.NewRuleManager(wizardConfig.RulesDir)
-		
+
 		if err := rm.Initialize(); err != nil {
 			fmt.Printf("❌ Failed to initialize rule manager: %v\n", err)
 			return err

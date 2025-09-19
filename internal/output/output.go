@@ -57,7 +57,7 @@ func (o *Outputter) writeTable(entries []parser.LogEntry) error {
 		if len(message) > 50 {
 			message = message[:47] + "..."
 		}
-		
+
 		table.Append([]string{
 			entry.Timestamp,
 			entry.Hostname,
@@ -91,7 +91,7 @@ func (o *Outputter) writeCSV(entries []parser.LogEntry) error {
 			entry.Message,
 			strings.Join(entry.MatchedRules, ";"),
 		}
-		
+
 		if err := writer.Write(record); err != nil {
 			return fmt.Errorf("failed to write CSV record: %w", err)
 		}
@@ -103,6 +103,6 @@ func (o *Outputter) writeCSV(entries []parser.LogEntry) error {
 func (o *Outputter) writeJSON(entries []parser.LogEntry) error {
 	encoder := json.NewEncoder(os.Stdout)
 	encoder.SetIndent("", "  ")
-	
+
 	return encoder.Encode(entries)
 }

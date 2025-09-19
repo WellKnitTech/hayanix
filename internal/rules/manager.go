@@ -57,7 +57,7 @@ func (rm *RuleManager) Initialize() error {
 
 func (rm *RuleManager) createDefaultConfig() error {
 	configPath := filepath.Join(rm.rulesDir, "sources.yml")
-	
+
 	// Check if config already exists
 	if _, err := os.Stat(configPath); err == nil {
 		return nil // Config already exists
@@ -87,7 +87,7 @@ func (rm *RuleManager) createDefaultConfig() error {
 
 func (rm *RuleManager) saveConfig(config RuleConfig) error {
 	configPath := filepath.Join(rm.rulesDir, "sources.yml")
-	
+
 	data, err := yaml.Marshal(config)
 	if err != nil {
 		return fmt.Errorf("failed to marshal config: %w", err)
@@ -98,7 +98,7 @@ func (rm *RuleManager) saveConfig(config RuleConfig) error {
 
 func (rm *RuleManager) loadConfig() (RuleConfig, error) {
 	configPath := filepath.Join(rm.rulesDir, "sources.yml")
-	
+
 	data, err := os.ReadFile(configPath)
 	if err != nil {
 		return RuleConfig{}, fmt.Errorf("failed to read config: %w", err)
@@ -159,7 +159,7 @@ func (rm *RuleManager) downloadChopChopGoRules(targetDir string, source *RuleSou
 	// ChopChopGo specific rule paths
 	rulePaths := []string{
 		"rules/linux/builtin/syslog",
-		"rules/linux/builtin/journald", 
+		"rules/linux/builtin/journald",
 		"rules/linux/builtin/auditd",
 	}
 
@@ -179,7 +179,6 @@ func (rm *RuleManager) downloadSigmaHQRules(targetDir string, source *RuleSource
 	downloader := NewGitHubDownloader()
 	return downloader.DownloadRepositoryRules(source.URL, source.Branch, targetDir, rulePaths)
 }
-
 
 func (rm *RuleManager) ListSources() ([]RuleSource, error) {
 	config, err := rm.loadConfig()

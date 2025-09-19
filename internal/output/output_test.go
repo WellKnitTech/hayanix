@@ -46,34 +46,34 @@ func TestOutputter_Write(t *testing.T) {
 	// Create test log entries
 	entries := []parser.LogEntry{
 		{
-			Timestamp: "2025-01-01T10:30:15.000",
-			Hostname:  "server1",
-			Program:   "sshd[1234]",
-			PID:       "1234",
-			Message:   "Failed password for root from 192.168.1.100 port 22 ssh2",
-			Category:  "process",
-			Product:   "linux",
-			Service:   "syslog",
-			Fields:    make(map[string]string),
+			Timestamp:    "2025-01-01T10:30:15.000",
+			Hostname:     "server1",
+			Program:      "sshd[1234]",
+			PID:          "1234",
+			Message:      "Failed password for root from 192.168.1.100 port 22 ssh2",
+			Category:     "process",
+			Product:      "linux",
+			Service:      "syslog",
+			Fields:       make(map[string]string),
 			MatchedRules: []string{"test-rule-001"},
 		},
 		{
-			Timestamp: "2025-01-01T10:30:16.000",
-			Hostname:  "server1",
-			Program:   "sshd[1234]",
-			PID:       "1234",
-			Message:   "Failed password for root from 192.168.1.100 port 22 ssh2",
-			Category:  "process",
-			Product:   "linux",
-			Service:   "syslog",
-			Fields:    make(map[string]string),
+			Timestamp:    "2025-01-01T10:30:16.000",
+			Hostname:     "server1",
+			Program:      "sshd[1234]",
+			PID:          "1234",
+			Message:      "Failed password for root from 192.168.1.100 port 22 ssh2",
+			Category:     "process",
+			Product:      "linux",
+			Service:      "syslog",
+			Fields:       make(map[string]string),
 			MatchedRules: []string{"test-rule-001"},
 		},
 	}
 
 	t.Run("table format", func(t *testing.T) {
 		outputter := NewOutputter("table")
-		
+
 		// Capture stdout
 		oldStdout := os.Stdout
 		r, w, _ := os.Pipe()
@@ -117,7 +117,7 @@ func TestOutputter_Write(t *testing.T) {
 
 	t.Run("csv format", func(t *testing.T) {
 		outputter := NewOutputter("csv")
-		
+
 		// Capture stdout
 		oldStdout := os.Stdout
 		r, w, _ := os.Pipe()
@@ -146,13 +146,13 @@ func TestOutputter_Write(t *testing.T) {
 
 	t.Run("json format", func(t *testing.T) {
 		outputter := NewOutputter("json")
-		
+
 		// Test that JSON output doesn't error
 		err := outputter.Write(entries)
 		if err != nil {
 			t.Errorf("Write() error = %v", err)
 		}
-		
+
 		// Test that the outputter was created correctly
 		if outputter.format != "json" {
 			t.Errorf("Expected format 'json', got '%s'", outputter.format)
@@ -162,7 +162,7 @@ func TestOutputter_Write(t *testing.T) {
 
 func TestOutputter_WriteEmptyEntries(t *testing.T) {
 	outputter := NewOutputter("table")
-	
+
 	// Capture stdout
 	oldStdout := os.Stdout
 	r, w, _ := os.Pipe()

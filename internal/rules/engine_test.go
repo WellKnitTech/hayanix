@@ -144,7 +144,7 @@ fields:
 		t.Log("No matches found - this is expected when no rules are loaded")
 		return
 	}
-	
+
 	if len(matchedEntries) != 1 {
 		t.Errorf("Expected 1 matched entry, got %d", len(matchedEntries))
 	}

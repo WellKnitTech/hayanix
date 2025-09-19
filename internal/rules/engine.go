@@ -18,19 +18,19 @@ type Engine struct {
 }
 
 type Rule struct {
-	Title       string                 `yaml:"title"`
-	ID          string                 `yaml:"id"`
-	Status      string                 `yaml:"status"`
-	Description string                 `yaml:"description"`
-	Author      string                 `yaml:"author"`
-	Date        string                 `yaml:"date"`
-	Modified    string                 `yaml:"modified"`
-	Tags        []string               `yaml:"tags"`
-	Level       string                 `yaml:"level"`
-	Logsource   LogSource              `yaml:"logsource"`
-	Detection   map[string]interface{} `yaml:"detection"`
-	Falsepositives []string            `yaml:"falsepositives"`
-	Fields      []string               `yaml:"fields"`
+	Title          string                 `yaml:"title"`
+	ID             string                 `yaml:"id"`
+	Status         string                 `yaml:"status"`
+	Description    string                 `yaml:"description"`
+	Author         string                 `yaml:"author"`
+	Date           string                 `yaml:"date"`
+	Modified       string                 `yaml:"modified"`
+	Tags           []string               `yaml:"tags"`
+	Level          string                 `yaml:"level"`
+	Logsource      LogSource              `yaml:"logsource"`
+	Detection      map[string]interface{} `yaml:"detection"`
+	Falsepositives []string               `yaml:"falsepositives"`
+	Fields         []string               `yaml:"fields"`
 }
 
 type LogSource struct {
@@ -136,7 +136,7 @@ func (e *Engine) validateRule(rule Rule) error {
 	// Check for common detection patterns
 	hasSelection := false
 	hasCondition := false
-	
+
 	for key, value := range rule.Detection {
 		if key == "selection" {
 			hasSelection = true
@@ -201,13 +201,13 @@ func (e *Engine) matchesLogSource(entry parser.LogEntry, logSource LogSource) bo
 func (e *Engine) evaluateDetection(entry parser.LogEntry, detection map[string]interface{}) bool {
 	// Evaluate selection criteria
 	matches := make(map[string]bool)
-	
+
 	// Get selection criteria
 	selection, ok := detection["selection"].(map[string]interface{})
 	if !ok {
 		return false
 	}
-	
+
 	for field, criteria := range selection {
 		matches[field] = e.evaluateField(entry, field, criteria)
 	}
@@ -217,13 +217,13 @@ func (e *Engine) evaluateDetection(entry parser.LogEntry, detection map[string]i
 	if !ok {
 		return false
 	}
-	
+
 	return e.evaluateCondition(matches, condition)
 }
 
 func (e *Engine) evaluateField(entry parser.LogEntry, field string, criteria interface{}) bool {
 	fieldValue := e.getFieldValue(entry, field)
-	
+
 	switch v := criteria.(type) {
 	case string:
 		return e.matchString(fieldValue, v)
@@ -280,25 +280,25 @@ func (e *Engine) matchString(value, pattern string) bool {
 		matched, _ := regexp.MatchString(regex, value)
 		return matched
 	}
-	
+
 	// Handle contains patterns
 	if strings.HasPrefix(pattern, "|contains|") {
 		substring := strings.TrimPrefix(pattern, "|contains|")
 		return strings.Contains(strings.ToLower(value), strings.ToLower(substring))
 	}
-	
+
 	// Handle startswith patterns
 	if strings.HasPrefix(pattern, "|startswith|") {
 		prefix := strings.TrimPrefix(pattern, "|startswith|")
 		return strings.HasPrefix(strings.ToLower(value), strings.ToLower(prefix))
 	}
-	
+
 	// Handle endswith patterns
 	if strings.HasPrefix(pattern, "|endswith|") {
 		suffix := strings.TrimPrefix(pattern, "|endswith|")
 		return strings.HasSuffix(strings.ToLower(value), strings.ToLower(suffix))
 	}
-	
+
 	// Default: case-insensitive contains
 	return strings.Contains(strings.ToLower(value), strings.ToLower(pattern))
 }
@@ -332,10 +332,10 @@ func (e *Engine) evaluateCondition(matches map[string]bool, condition string) bo
 	if condition == "" {
 		condition = "selection"
 	}
-	
+
 	// Simple condition evaluation - can be enhanced for complex logic
 	condition = strings.ToLower(condition)
-	
+
 	if condition == "selection" {
 		// All selection criteria must match
 		for _, match := range matches {
@@ -345,7 +345,7 @@ func (e *Engine) evaluateCondition(matches map[string]bool, condition string) bo
 		}
 		return len(matches) > 0
 	}
-	
+
 	if strings.Contains(condition, " and ") {
 		parts := strings.Split(condition, " and ")
 		for _, part := range parts {
@@ -356,7 +356,7 @@ func (e *Engine) evaluateCondition(matches map[string]bool, condition string) bo
 		}
 		return true
 	}
-	
+
 	if strings.Contains(condition, " or ") {
 		parts := strings.Split(condition, " or ")
 		for _, part := range parts {
@@ -367,7 +367,7 @@ func (e *Engine) evaluateCondition(matches map[string]bool, condition string) bo
 		}
 		return false
 	}
-	
+
 	// Single field condition
 	return matches[condition]
 }

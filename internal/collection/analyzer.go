@@ -30,13 +30,13 @@ type AnalysisResult struct {
 }
 
 type CollectionResult struct {
-	Collection    *Collection
-	Results       []AnalysisResult
-	TotalMatches  int
-	TotalFiles    int
+	Collection     *Collection
+	Results        []AnalysisResult
+	TotalMatches   int
+	TotalFiles     int
 	ProcessedFiles int
-	FailedFiles   int
-	TotalTime     time.Duration
+	FailedFiles    int
+	TotalTime      time.Duration
 }
 
 func NewCollectionAnalyzer(collection *Collection, rulesDir string, outputFormat string, verbose bool) (*CollectionAnalyzer, error) {
@@ -59,7 +59,7 @@ func NewCollectionAnalyzer(collection *Collection, rulesDir string, outputFormat
 
 func (ca *CollectionAnalyzer) AnalyzeCollection() (*CollectionResult, error) {
 	startTime := time.Now()
-	
+
 	result := &CollectionResult{
 		Collection: ca.collection,
 		Results:    make([]AnalysisResult, 0),
@@ -74,7 +74,7 @@ func (ca *CollectionAnalyzer) AnalyzeCollection() (*CollectionResult, error) {
 	for _, logFile := range ca.collection.LogFiles {
 		analysisResult := ca.analyzeLogFile(logFile)
 		result.Results = append(result.Results, analysisResult)
-		
+
 		if analysisResult.Error != nil {
 			result.FailedFiles++
 			if ca.verbose {
@@ -98,7 +98,7 @@ func (ca *CollectionAnalyzer) AnalyzeCollection() (*CollectionResult, error) {
 
 func (ca *CollectionAnalyzer) analyzeLogFile(logFile LogFile) AnalysisResult {
 	startTime := time.Now()
-	
+
 	result := AnalysisResult{
 		LogFile: logFile.Path,
 		LogType: logFile.Type,
@@ -184,9 +184,9 @@ func (ca *CollectionAnalyzer) WriteSummary(result *CollectionResult) {
 			if analysisResult.Error != nil {
 				status = "❌"
 			}
-			
+
 			relativePath, _ := filepath.Rel(result.Collection.BasePath, analysisResult.LogFile)
-			fmt.Printf("  %s %s (%s): %d matches\n", 
+			fmt.Printf("  %s %s (%s): %d matches\n",
 				status, relativePath, analysisResult.LogType, analysisResult.MatchCount)
 		}
 	}

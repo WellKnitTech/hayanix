@@ -25,7 +25,7 @@ func NewGitHubDownloader() *GitHubDownloader {
 func (gd *GitHubDownloader) DownloadRepositoryRules(repoURL, branch, targetDir string, rulePaths []string) error {
 	// Convert GitHub URL to archive URL
 	archiveURL := gd.getArchiveURL(repoURL, branch)
-	
+
 	// Download the archive
 	archiveData, err := gd.downloadArchive(archiveURL)
 	if err != nil {
@@ -41,7 +41,7 @@ func (gd *GitHubDownloader) getArchiveURL(repoURL, branch string) string {
 	if strings.HasSuffix(repoURL, ".git") {
 		repoURL = strings.TrimSuffix(repoURL, ".git")
 	}
-	
+
 	return fmt.Sprintf("%s/archive/%s.tar.gz", repoURL, branch)
 }
 
@@ -106,10 +106,10 @@ func (gd *GitHubDownloader) shouldExtractFile(filePath string, wantedPaths map[s
 	if len(parts) < 2 {
 		return false
 	}
-	
+
 	// Reconstruct the path without the repo prefix
 	relativePath := strings.Join(parts[1:], "/")
-	
+
 	// Check if this path starts with any of our wanted paths
 	for wantedPath := range wantedPaths {
 		if strings.HasPrefix(relativePath, wantedPath+"/") || relativePath == wantedPath {
@@ -117,14 +117,14 @@ func (gd *GitHubDownloader) shouldExtractFile(filePath string, wantedPaths map[s
 			return strings.HasSuffix(filePath, ".yml") || strings.HasSuffix(filePath, ".yaml")
 		}
 	}
-	
+
 	return false
 }
 
 func (gd *GitHubDownloader) extractFile(reader io.Reader, header *tar.Header, targetDir string) error {
 	// Create the target file path
 	targetPath := filepath.Join(targetDir, header.Name)
-	
+
 	// Create directory if needed
 	if err := os.MkdirAll(filepath.Dir(targetPath), 0755); err != nil {
 		return fmt.Errorf("failed to create directory: %w", err)
@@ -161,7 +161,7 @@ func NewGitHubAPIDownloader(token string) *GitHubAPIDownloader {
 
 func (gad *GitHubAPIDownloader) DownloadFile(repoOwner, repoName, filePath, targetPath string) error {
 	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/master/%s", repoOwner, repoName, filePath)
-	
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)

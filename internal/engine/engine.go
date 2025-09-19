@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/wellknittech/hayanix/internal/output"
 	"github.com/wellknittech/hayanix/internal/parser"
 	"github.com/wellknittech/hayanix/internal/rules"
-	"github.com/wellknittech/hayanix/internal/output"
 )
 
 type Engine struct {
@@ -81,7 +81,7 @@ func (e *Engine) getLogFilePath() string {
 
 func (e *Engine) processLogs(logParser parser.Parser, ruleEngine *rules.Engine) ([]parser.LogEntry, error) {
 	var results []parser.LogEntry
-	
+
 	entries, err := logParser.Parse()
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse log file: %w", err)
