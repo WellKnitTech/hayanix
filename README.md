@@ -1,2 +1,2 @@
 # hayanix
-An attempt to being the ease of Hayabusa fast forensics to *nix logging.
+An attempt to bring the ease of Hayabusa fast forensics to *nix logging.
