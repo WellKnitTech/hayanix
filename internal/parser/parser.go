@@ -48,9 +48,14 @@ func NewSyslogParser(filePath string) *SyslogParser {
 }
 
 func (p *SyslogParser) Parse() ([]LogEntry, error) {
+	// Check if file exists
+	if _, err := os.Stat(p.filePath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("log file does not exist: %s", p.filePath)
+	}
+
 	file, err := os.Open(p.filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
+		return nil, fmt.Errorf("failed to open file %s: %w", p.filePath, err)
 	}
 	defer file.Close()
 
@@ -115,9 +120,14 @@ func NewJournaldParser(filePath string) *JournaldParser {
 }
 
 func (p *JournaldParser) Parse() ([]LogEntry, error) {
+	// Check if file exists
+	if _, err := os.Stat(p.filePath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("log file does not exist: %s", p.filePath)
+	}
+
 	file, err := os.Open(p.filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
+		return nil, fmt.Errorf("failed to open file %s: %w", p.filePath, err)
 	}
 	defer file.Close()
 
@@ -184,9 +194,14 @@ func NewAuditdParser(filePath string) *AuditdParser {
 }
 
 func (p *AuditdParser) Parse() ([]LogEntry, error) {
+	// Check if file exists
+	if _, err := os.Stat(p.filePath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("log file does not exist: %s", p.filePath)
+	}
+
 	file, err := os.Open(p.filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
+		return nil, fmt.Errorf("failed to open file %s: %w", p.filePath, err)
 	}
 	defer file.Close()
 

@@ -1,0 +1,45 @@
+title: System Compromise Indicators
+id: hayanix-linux-syslog-system-compromise
+status: experimental
+description: Detects indicators of system compromise and unauthorized access
+author: Hayanix Team
+date: 2025/01/01
+modified: 2025/01/01
+tags:
+    - attack.persistence
+    - attack.t1543
+    - attack.t1050
+level: high
+logsource:
+    category: process
+    product: linux
+    service: syslog
+detection:
+    selection:
+        message:
+            - 'useradd.*-m.*-s.*/bin/bash'
+            - 'usermod.*-aG.*sudo'
+            - 'groupadd.*admin'
+            - 'chmod.*777'
+            - 'chown.*root.*root'
+            - 'crontab.*-e'
+            - 'at.*now'
+            - 'systemctl.*enable'
+            - 'service.*start'
+            - 'init.d.*start'
+            - 'rc.local.*exec'
+            - 'profile.*export'
+            - 'bashrc.*export'
+            - 'ssh.*-o.*StrictHostKeyChecking=no'
+            - 'ssh.*-o.*UserKnownHostsFile=/dev/null'
+    condition: selection
+falsepositives:
+    - Legitimate system administration
+    - Automated system setup
+    - Development environment configuration
+    - Backup and maintenance scripts
+fields:
+    - message
+    - hostname
+    - program
+    - timestamp

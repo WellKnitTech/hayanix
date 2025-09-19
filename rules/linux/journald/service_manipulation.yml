@@ -1,0 +1,49 @@
+title: Systemd Service Manipulation
+id: hayanix-linux-journald-service-manipulation
+status: experimental
+description: Detects unauthorized systemd service manipulation and persistence mechanisms
+author: Hayanix Team
+date: 2025/01/01
+modified: 2025/01/01
+tags:
+    - attack.persistence
+    - attack.t1543
+    - attack.t1050
+level: high
+logsource:
+    category: process
+    product: linux
+    service: journald
+detection:
+    selection:
+        message:
+            - 'systemd.*Started.*service'
+            - 'systemd.*Stopped.*service'
+            - 'systemd.*Enabled.*service'
+            - 'systemd.*Disabled.*service'
+            - 'systemd.*Reloaded.*service'
+            - 'systemd.*Restarted.*service'
+            - 'systemd.*Failed.*service'
+            - 'systemd.*Activating.*service'
+            - 'systemd.*Deactivating.*service'
+        service:
+            - 'ssh'
+            - 'sshd'
+            - 'apache2'
+            - 'nginx'
+            - 'mysql'
+            - 'postgresql'
+            - 'docker'
+            - 'kubelet'
+            - 'etcd'
+    condition: selection
+falsepositives:
+    - Legitimate service management
+    - Automated deployment
+    - System maintenance
+    - Load balancing
+fields:
+    - message
+    - service
+    - hostname
+    - timestamp

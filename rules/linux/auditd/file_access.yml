@@ -1,21 +1,21 @@
-title: Suspicious File Access
+title: Suspicious File Access Patterns
 id: hayanix-linux-auditd-file-access
 status: experimental
-description: Detects suspicious file access patterns
+description: Detects suspicious file access patterns and unauthorized file operations
 author: Hayanix Team
 date: 2025/01/01
 modified: 2025/01/01
 tags:
-    - attack.persistence
+    - attack.discovery
+    - attack.t1083
     - attack.t1005
 level: medium
 logsource:
-    category: audit
+    category: process
     product: linux
     service: auditd
 detection:
     selection:
-        type: SYSCALL
         syscall:
             - open
             - openat
@@ -26,13 +26,26 @@ detection:
             - '/bin/sh'
             - '/usr/bin/python'
             - '/usr/bin/perl'
+        path:
+            - '/etc/passwd'
+            - '/etc/shadow'
+            - '/etc/sudoers'
+            - '/root/.ssh/id_rsa'
+            - '/root/.ssh/id_ed25519'
+            - '/home/*/.ssh/id_rsa'
+            - '/home/*/.ssh/id_ed25519'
+            - '/etc/ssh/ssh_host_rsa_key'
+            - '/etc/ssh/ssh_host_ed25519_key'
     condition: selection
 falsepositives:
-    - Legitimate file operations
-    - System administration tasks
+    - Legitimate system administration
+    - Backup operations
+    - SSH key management
+    - System maintenance
 fields:
-    - type
     - syscall
     - exe
+    - path
     - auid
     - uid
+    - gid

@@ -147,7 +147,12 @@ func (ac *AnalyzeCmd) Run() error {
 
 	// Validate rules directory
 	if _, err := os.Stat(rulesDir); os.IsNotExist(err) {
-		return fmt.Errorf("rules directory does not exist: %s", rulesDir)
+		return fmt.Errorf("rules directory does not exist: %s. Run 'hayanix wizard' to set up rules or create the directory manually", rulesDir)
+	}
+
+	// Check if rules directory is readable
+	if _, err := os.Open(rulesDir); err != nil {
+		return fmt.Errorf("cannot read rules directory %s: %w", rulesDir, err)
 	}
 
 	// Validate output format
@@ -309,7 +314,21 @@ func (wc *WizardCmd) Run() error {
 func (cc *CollectionCmd) Run() error {
 	// Validate path
 	if cc.Path == "" {
-		return fmt.Errorf("collection path is required")
+		return fmt.Errorf("collection path is required. Use --path to specify a directory containing log files")
+	}
+
+	// Check if path exists
+	if _, err := os.Stat(cc.Path); os.IsNotExist(err) {
+		return fmt.Errorf("collection path does not exist: %s", cc.Path)
+	}
+
+	// Check if path is a directory
+	fileInfo, err := os.Stat(cc.Path)
+	if err != nil {
+		return fmt.Errorf("cannot access collection path %s: %w", cc.Path, err)
+	}
+	if !fileInfo.IsDir() {
+		return fmt.Errorf("collection path must be a directory: %s", cc.Path)
 	}
 
 	// Validate output format

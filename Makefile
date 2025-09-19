@@ -73,6 +73,12 @@ setup-rules: build
 	@echo "Setting up external rule sources..."
 	./scripts/setup-rules.sh
 
+# Create release
+release: build-all
+	@echo "Creating release..."
+	chmod +x scripts/release.sh
+	./scripts/release.sh
+
 # Show help
 help:
 	@echo "Available targets:"
@@ -87,4 +93,5 @@ help:
 	@echo "  lint         - Lint code"
 	@echo "  run          - Run the application"
 	@echo "  setup-rules  - Setup external rule sources"
+	@echo "  release      - Create release with binaries"
 	@echo "  help         - Show this help"

@@ -96,6 +96,12 @@ func (e *Engine) loadRulesFromDir(dir string) error {
 			return nil // Continue loading other rules
 		}
 
+		// Additional validation for rule structure
+		if err := e.validateRule(rule); err != nil {
+			log.Printf("Warning: rule %s failed validation: %v", path, err)
+			return nil // Continue loading other rules
+		}
+
 		e.rules = append(e.rules, rule)
 		return nil
 	})
@@ -106,14 +112,60 @@ func (e *Engine) loadRule(filePath string) (Rule, error) {
 
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return rule, fmt.Errorf("failed to read rule file: %w", err)
+		return rule, fmt.Errorf("failed to read rule file %s: %w", filePath, err)
 	}
 
 	if err := yaml.Unmarshal(data, &rule); err != nil {
-		return rule, fmt.Errorf("failed to parse YAML: %w", err)
+		return rule, fmt.Errorf("failed to parse YAML in %s: %w", filePath, err)
+	}
+
+	// Validate required fields
+	if rule.ID == "" {
+		return rule, fmt.Errorf("rule in %s is missing required field 'id'", filePath)
+	}
+	if rule.Title == "" {
+		return rule, fmt.Errorf("rule in %s is missing required field 'title'", filePath)
+	}
+	if rule.Detection == nil {
+		return rule, fmt.Errorf("rule in %s is missing required field 'detection'", filePath)
 	}
 
 	return rule, nil
+}
+
+func (e *Engine) validateRule(rule Rule) error {
+	// Check if detection section has valid structure
+	if rule.Detection == nil {
+		return fmt.Errorf("detection section is nil")
+	}
+
+	// Check for common detection patterns
+	hasSelection := false
+	hasCondition := false
+	
+	for key, value := range rule.Detection {
+		if key == "selection" {
+			hasSelection = true
+			if value == nil {
+				return fmt.Errorf("selection section is nil")
+			}
+		}
+		if key == "condition" {
+			hasCondition = true
+			if value == nil {
+				return fmt.Errorf("condition section is nil")
+			}
+		}
+	}
+
+	if !hasSelection {
+		return fmt.Errorf("detection section missing 'selection'")
+	}
+	if !hasCondition {
+		return fmt.Errorf("detection section missing 'condition'")
+	}
+
+	return nil
 }
 
 func (e *Engine) Evaluate(entry parser.LogEntry) []string {

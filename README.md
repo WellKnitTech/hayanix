@@ -32,6 +32,17 @@ make setup-rules  # Optional: download external rule sources
 #### Pre-built Binaries
 Download the latest release from the [releases page](https://github.com/wellknittech/hayanix/releases).
 
+```bash
+# Download and extract the appropriate binary for your platform
+wget https://github.com/wellknittech/hayanix/releases/download/v0.1.0/hayanix-v0.1.0.tar.gz
+tar -xzf hayanix-v0.1.0.tar.gz
+cd hayanix-v0.1.0
+
+# Make executable and run
+chmod +x hayanix-linux-amd64  # or hayanix-darwin-amd64, hayanix-windows-amd64.exe
+./hayanix-linux-amd64 wizard
+```
+
 ### Basic Usage
 
 #### Quick Start with Wizard
@@ -375,6 +386,58 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Hayabusa](https://github.com/Yamato-Security/hayabusa) - Windows event log analysis tool
 - [ChopChopGo](https://github.com/M00NLIG7/ChopChopGo) - Linux forensics artifact recovery
 - [Sigma](https://github.com/SigmaHQ/sigma) - Generic signature format for SIEM systems
+
+## Troubleshooting
+
+### Common Issues
+
+#### "rules directory does not exist"
+```bash
+# Solution: Run the wizard to set up rules
+./hayanix wizard
+
+# Or create the directory manually
+mkdir -p ./rules
+```
+
+#### "No matching entries found"
+- Check that your log files contain the expected format
+- Verify that rules are loaded correctly: `./hayanix rules list`
+- Try with verbose output: `./hayanix analyze --verbose`
+
+#### "Failed to parse YAML" warnings
+- These warnings indicate some external rules have formatting issues
+- They don't affect functionality - valid rules will still be loaded
+- You can ignore these warnings or update the problematic rule files
+
+#### "Collection path must be a directory"
+```bash
+# Make sure you're pointing to a directory, not a file
+./hayanix collection --path /var/log  # ✅ Correct
+./hayanix collection --path /var/log/messages  # ❌ Incorrect
+```
+
+#### Permission denied errors
+```bash
+# Make sure you have read access to log files
+sudo ./hayanix analyze --target syslog --file /var/log/messages
+
+# Or run as root for system logs
+sudo ./hayanix collection --path /var/log
+```
+
+### Performance Tips
+
+- For large log files, use the collection feature to process multiple files
+- Use CSV output for large datasets: `--format csv`
+- Filter by log type to reduce processing time: `--type syslog`
+
+### Getting Help
+
+1. Check the [Issues](https://github.com/wellknittech/hayanix/issues) page
+2. Run with verbose output to see detailed information
+3. Ensure you're using the latest version
+4. Check that your log files are in the expected format
 
 ## Roadmap
 

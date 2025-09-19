@@ -1,0 +1,46 @@
+title: Container and Docker Activity
+id: hayanix-linux-journald-container-activity
+status: experimental
+description: Detects suspicious container and Docker activities
+author: Hayanix Team
+date: 2025/01/01
+modified: 2025/01/01
+tags:
+    - attack.execution
+    - attack.t1610
+    - attack.t1055
+level: medium
+logsource:
+    category: process
+    product: linux
+    service: journald
+detection:
+    selection:
+        message:
+            - 'docker.*run.*-it'
+            - 'docker.*exec.*-it'
+            - 'docker.*start.*container'
+            - 'docker.*stop.*container'
+            - 'docker.*rm.*container'
+            - 'docker.*build.*-t'
+            - 'docker.*pull.*image'
+            - 'docker.*push.*image'
+            - 'containerd.*start.*container'
+            - 'containerd.*stop.*container'
+            - 'podman.*run.*-it'
+            - 'podman.*exec.*-it'
+        service:
+            - 'docker'
+            - 'containerd'
+            - 'podman'
+    condition: selection
+falsepositives:
+    - Legitimate container management
+    - Development and testing
+    - CI/CD pipelines
+    - Container orchestration
+fields:
+    - message
+    - service
+    - hostname
+    - timestamp

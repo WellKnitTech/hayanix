@@ -8,7 +8,7 @@ import (
 	"github.com/wellknittech/hayanix/internal/cli"
 )
 
-var version = "dev"
+var version = "0.1.0"
 
 func main() {
 	var cliArgs cli.Args

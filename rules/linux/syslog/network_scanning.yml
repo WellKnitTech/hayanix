@@ -1,13 +1,14 @@
-title: Network Scanning Activity
+title: Network Scanning and Reconnaissance
 id: hayanix-linux-syslog-network-scanning
 status: experimental
-description: Detects potential network scanning activities
+description: Detects network scanning activities and reconnaissance attempts
 author: Hayanix Team
 date: 2025/01/01
 modified: 2025/01/01
 tags:
     - attack.discovery
     - attack.t1046
+    - attack.t1082
 level: medium
 logsource:
     category: process
@@ -16,16 +17,24 @@ logsource:
 detection:
     selection:
         message:
-            - 'Connection refused'
-            - 'No route to host'
-            - 'Host is down'
-            - 'Connection timed out'
-            - 'Port scan'
+            - 'Connection refused from'
+            - 'Connection reset by peer'
+            - 'Too many connections from'
+            - 'Connection from .* refused'
+            - 'Failed to connect to'
+            - 'Connection timeout'
+            - 'Host unreachable'
+            - 'Port scan detected'
+            - 'Suspicious connection pattern'
+            - 'Multiple failed connection attempts'
     condition: selection
 falsepositives:
-    - Legitimate network connectivity issues
-    - Network maintenance activities
+    - Legitimate network troubleshooting
+    - Load balancer health checks
+    - Monitoring systems
+    - Network maintenance
 fields:
     - message
     - hostname
     - program
+    - timestamp
