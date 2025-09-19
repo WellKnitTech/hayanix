@@ -1,0 +1,31 @@
+title: Suspicious Login Attempts
+id: hayanix-linux-syslog-suspicious-login-attempts
+status: experimental
+description: Detects suspicious login attempts and authentication failures
+author: Hayanix Team
+date: 2025/01/01
+modified: 2025/01/01
+tags:
+    - attack.credential_access
+    - attack.t1110
+level: medium
+logsource:
+    category: process
+    product: linux
+    service: syslog
+detection:
+    selection:
+        message:
+            - 'Failed password for'
+            - 'Invalid user'
+            - 'authentication failure'
+            - 'Connection closed by'
+            - 'Too many authentication failures'
+    condition: selection
+falsepositives:
+    - Legitimate users forgetting passwords
+    - Automated systems with incorrect credentials
+fields:
+    - message
+    - hostname
+    - program

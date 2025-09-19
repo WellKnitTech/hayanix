@@ -1,0 +1,31 @@
+title: Privilege Escalation Attempts
+id: hayanix-linux-syslog-privilege-escalation
+status: experimental
+description: Detects attempts to escalate privileges using sudo or su
+author: Hayanix Team
+date: 2025/01/01
+modified: 2025/01/01
+tags:
+    - attack.privilege_escalation
+    - attack.t1068
+level: high
+logsource:
+    category: process
+    product: linux
+    service: syslog
+detection:
+    selection:
+        message:
+            - 'sudo:'
+            - 'su:'
+            - 'FAILED su'
+            - 'FAILED sudo'
+            - 'authentication failure'
+    condition: selection
+falsepositives:
+    - Legitimate administrative activities
+    - Automated scripts with sudo access
+fields:
+    - message
+    - hostname
+    - program

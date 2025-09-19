@@ -1,0 +1,32 @@
+title: Systemd Service Manipulation
+id: hayanix-linux-journald-systemd-service-manipulation
+status: experimental
+description: Detects manipulation of systemd services
+author: Hayanix Team
+date: 2025/01/01
+modified: 2025/01/01
+tags:
+    - attack.persistence
+    - attack.t1543
+level: high
+logsource:
+    category: process
+    product: linux
+    service: journald
+detection:
+    selection:
+        message:
+            - 'systemctl start'
+            - 'systemctl stop'
+            - 'systemctl enable'
+            - 'systemctl disable'
+            - 'systemctl restart'
+            - 'systemctl reload'
+    condition: selection
+falsepositives:
+    - Legitimate system administration
+    - Automated service management
+fields:
+    - message
+    - hostname
+    - program

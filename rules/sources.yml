@@ -1,0 +1,11 @@
+sources:
+- name: ChopChopGo
+  url: https://github.com/M00NLIG7/ChopChopGo
+  branch: master
+  description: ChopChopGo Linux forensics rules
+  enabled: true
+- name: SigmaHQ
+  url: https://github.com/SigmaHQ/sigma
+  branch: master
+  description: Official Sigma rules repository
+  enabled: true

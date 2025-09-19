@@ -1,0 +1,31 @@
+title: Network Scanning Activity
+id: hayanix-linux-syslog-network-scanning
+status: experimental
+description: Detects potential network scanning activities
+author: Hayanix Team
+date: 2025/01/01
+modified: 2025/01/01
+tags:
+    - attack.discovery
+    - attack.t1046
+level: medium
+logsource:
+    category: process
+    product: linux
+    service: syslog
+detection:
+    selection:
+        message:
+            - 'Connection refused'
+            - 'No route to host'
+            - 'Host is down'
+            - 'Connection timed out'
+            - 'Port scan'
+    condition: selection
+falsepositives:
+    - Legitimate network connectivity issues
+    - Network maintenance activities
+fields:
+    - message
+    - hostname
+    - program
